@@ -11,14 +11,18 @@ interface TaskListProps {
   tasks: Task[];
   toggleCompletion: (id: string) => void;
   removeTask: (id: string) => void;
-  updateTaskTitle: (id: string, title: string) => void; // Adicione esta linha
+  updateTaskTitle: (id: string, title: string) => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({ tasks, toggleCompletion, removeTask, updateTaskTitle }) => {
+  // Pega o filtro da URL
   const { filter } = useParams<string>();
+  // Variaveis para editar o titulo da task
   const [editingId, setEditingId] = useState<string | null>(null);
+  // Variaveis para editar o titulo da task
   const [newTitle, setNewTitle] = useState<string>("");
 
+  // Filtra as tasks de acordo com o filtro
   const filteredTasks = tasks.filter(task => {
     if (filter === "active") {
       return !task.completed;
@@ -28,15 +32,19 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, toggleCompletion, rem
     return true;
   });
 
+
+  // Função para editar o titulo da task
   const handleDoubleClick = (id: string, title: string) => {
     setEditingId(id);
     setNewTitle(title);
   };
 
+  // Função para atualizar o titulo da task
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewTitle(e.target.value);
   };
 
+  // Função para atualizar o titulo da task
   const handleTitleUpdate = (id: string) => {
     updateTaskTitle(id, newTitle);
     setEditingId(null);
@@ -45,7 +53,7 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, toggleCompletion, rem
   return (
     <ul className="todo-list">
       {filteredTasks.map(task => (
-        <li key={task.id}>
+        <li key={task.id} className={task.completed ? 'completed' : ''}>
           <input
             type="checkbox"
             checked={task.completed}
